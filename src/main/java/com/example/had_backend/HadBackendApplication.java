@@ -10,8 +10,5 @@ public class HadBackendApplication {
 		SpringApplication.run(HadBackendApplication.class, args);
 	}
 
-	public static boolean Test(){
-		 return true;
-	}
 
 }
