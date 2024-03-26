@@ -5,6 +5,7 @@ import com.example.had_backend.entity.UserInfo;
 import com.example.had_backend.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 public class ImageService {
@@ -18,4 +19,10 @@ public class ImageService {
         image.setUserInfo(userInfo);
         imageRepository.save(image);
     }
+    public Image getImageById(Long id) {
+        Optional<Image> imageOptional = imageRepository.findById(id);
+        return imageOptional.orElse(null);
+    }
+
+
 }

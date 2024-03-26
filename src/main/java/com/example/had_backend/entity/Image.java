@@ -18,11 +18,12 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Lob
     @Column(length = Integer.MAX_VALUE)
     private byte[] data; // Byte array to store image data
+
     @ManyToOne
-    private UserInfo userInfo;
-    // Other image attributes, constructors, getters, setter
+    private UserInfo userInfo; // related to userobject
 }
 

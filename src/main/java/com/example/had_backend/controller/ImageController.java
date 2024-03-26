@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
 import java.io.IOException;
 
 @RestController
@@ -48,6 +49,24 @@ public class ImageController {
         } catch (IOException e) {
             System.out.println("upload failed");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<byte[]> getImageById(@PathVariable Long id) {
+        try {
+            // Retrieve the image from the service layer
+            Image image = imageService.getImageById(id);
+            if (image == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            // Return the image data and appropriate headers
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG) // Adjust content type based on image type
+                    .body(image.getData());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }
