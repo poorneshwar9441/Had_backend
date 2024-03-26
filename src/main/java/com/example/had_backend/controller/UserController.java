@@ -11,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+
+import java.awt.*;
 import java.util.List;
 
 @RestController
@@ -34,6 +36,8 @@ public class UserController {
 
     @PostMapping("/addNewUser")
     public String addNewUser(@RequestBody UserInfo userInfo) {
+        System.out.println("added");
+
         return service.addUser(userInfo);
     }
 
@@ -54,6 +58,7 @@ public class UserController {
     public String adminProfile() {
         return "Welcome to Admin Profile";
     }
+
     @PostMapping("/generateToken")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));

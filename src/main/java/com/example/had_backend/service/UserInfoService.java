@@ -36,5 +36,9 @@ public class UserInfoService implements UserDetailsService {
         return "User Added Successfully";
     }
 
+    public UserInfo getUserByUsername(String username) {
+        Optional<UserInfo> userInfoOptional = repository.findByName(username);
+        return userInfoOptional.orElse(null); // Handle the Optional
+    }
 
 }
