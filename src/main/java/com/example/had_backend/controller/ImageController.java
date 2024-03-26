@@ -14,15 +14,21 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/images")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ImageController {
     @Autowired
     private ImageService imageService;
     @Autowired
     private UserInfoService userInfoService;
 
+    @GetMapping("/upload")
+    public String getResult(){
+         return "Hello world";
+    }
+
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file,@RequestParam("username") String username) {
-        System.out.println("here");
+    public ResponseEntity<String> uploadImage( @RequestParam("file") MultipartFile file,@RequestParam("username") String username) {
+         System.out.println("here this");
         try {
             // Retrieve user info from the database using the username
             UserInfo userInfo = userInfoService.getUserByUsername(username);

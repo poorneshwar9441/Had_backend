@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Column;
 
 @Entity
 @Data
@@ -18,6 +19,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Lob
+    @Column(length = Integer.MAX_VALUE)
     private byte[] data; // Byte array to store image data
     @ManyToOne
     private UserInfo userInfo;
