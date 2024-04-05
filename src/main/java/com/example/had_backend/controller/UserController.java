@@ -1,7 +1,6 @@
 package com.example.had_backend.controller;
 
 import com.example.had_backend.entity.AuthRequest;
-import com.example.had_backend.entity.UserInfo;
 import com.example.had_backend.service.JwtService;
 import com.example.had_backend.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,17 +30,32 @@ public class UserController {
 //        return "Welcome this endpoint is not secure";
 //    }
 
-    @PostMapping("/addNewUser")
-    public String addNewUser(@RequestBody UserInfo userInfo) {
-        System.out.println("added");
-
-        return service.addUser(userInfo);
-    }
+//    @PostMapping("/addNewUser")
+//    public String addNewUser(@RequestBody UserInfo userInfo) {
+//        System.out.println("added");
+//
+//        String return_type = service.addUser(userInfo);
+////        if(userInfo.getRoles() == "Role_Doctor") {
+////            // Add doctor to the doctor table
+////
+////
+////        }
+////        else if(userInfo.getRoles() == "Role_Patient"){
+////
+////        }
+//
+//        return return_type;
+//    }
 
     @GetMapping("/RadioGraph/RadioProfile")
     @PreAuthorize("hasAuthority('Radiographer')")
     public String RProfile() {
         return "Welcome to Radiographer Page";
+    }
+
+    @GetMapping("/ting")
+    public String temp() {
+        return "Welcome to ting Page";
     }
 
     @GetMapping("/Doctor/DoctorProf")
