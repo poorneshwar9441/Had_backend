@@ -1,6 +1,5 @@
 package com.example.had_backend.config;
 
-
 import com.example.had_backend.filter.JwtAuthFilter;
 import com.example.had_backend.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,13 +45,14 @@ public class SecurityConfig {
                         "/images/upload",
                         "/images/{id}",
                         "/auth/ting",
-                        "/createConsultation",
                         "/createDoctor",
                         "/createPatient").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/auth/user/**").authenticated()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/auth/admin/**").authenticated()
+                .and()
+                .authorizeHttpRequests().requestMatchers("/createConsultation").authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

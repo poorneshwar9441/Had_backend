@@ -8,6 +8,7 @@ import com.example.had_backend.service.DoctorService;
 import com.example.had_backend.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ public class ConsultationController {
     private PatientService patientService;
 
     @PostMapping("/createConsultation")
+    @PreAuthorize("hasAuthority('Doctor')")
     public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request) {
         Long doctorId = ((Integer) request.get("doctorId")).longValue();
         Long patientId =  ((Integer) request.get("patientId")).longValue();
