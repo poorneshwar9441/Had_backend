@@ -41,6 +41,9 @@ public class Consultation {
     )
     private Set<Report> reports = new HashSet<>();
 
+    @OneToMany(mappedBy = "consultation")
+    private Set<Room> rooms = new HashSet<>();
+
     private String description;
     private Boolean finished;
 }

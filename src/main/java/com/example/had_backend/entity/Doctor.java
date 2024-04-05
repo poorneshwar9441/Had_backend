@@ -26,4 +26,6 @@ public class Doctor {
 
     @ManyToMany(mappedBy = "secondaryDoctors")
     private Set<Consultation> secondaryConsultations = new HashSet<>();
+
+    private Long hospitalId;
 }

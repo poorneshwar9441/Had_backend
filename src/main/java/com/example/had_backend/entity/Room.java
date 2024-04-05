@@ -21,5 +21,9 @@ public class Room {
     )
     private Set<UserInfo> users = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "consultation", referencedColumnName = "id", nullable = false)
+    private Consultation consultation;
+
     private String description;
 }
