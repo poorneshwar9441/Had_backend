@@ -1,7 +1,6 @@
 package com.example.had_backend.controller;
 
 import com.example.had_backend.entity.AuthRequest;
-import com.example.had_backend.entity.UserInfo;
 import com.example.had_backend.service.JwtService;
 import com.example.had_backend.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,22 +30,22 @@ public class UserController {
 //        return "Welcome this endpoint is not secure";
 //    }
 
-    @PostMapping("/addNewUser")
-    public String addNewUser(@RequestBody UserInfo userInfo) {
-        System.out.println("added");
-
-        String return_type = service.addUser(userInfo);
-//        if(userInfo.getRoles() == "Role_Doctor") {
-//            // Add doctor to the doctor table
+//    @PostMapping("/addNewUser")
+//    public String addNewUser(@RequestBody UserInfo userInfo) {
+//        System.out.println("added");
 //
+//        String return_type = service.addUser(userInfo);
+////        if(userInfo.getRoles() == "Role_Doctor") {
+////            // Add doctor to the doctor table
+////
+////
+////        }
+////        else if(userInfo.getRoles() == "Role_Patient"){
+////
+////        }
 //
-//        }
-//        else if(userInfo.getRoles() == "Role_Patient"){
-//
-//        }
-
-        return return_type;
-    }
+//        return return_type;
+//    }
 
     @GetMapping("/RadioGraph/RadioProfile")
     @PreAuthorize("hasAuthority('Radiographer')")

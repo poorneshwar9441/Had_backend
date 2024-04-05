@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.lang.Long;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -29,18 +30,12 @@ public class ConsultationController {
 
     @PostMapping("/createConsultation")
     public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request) {
-        System.out.println("012");
-
-        Long doctorId = (Long) request.get("doctorId");
-        Long patientId = (Long) request.get("patientId");
+        Long doctorId = ((Integer) request.get("doctorId")).longValue();
+        Long patientId =  ((Integer) request.get("patientId")).longValue();
         String description = (String) request.get("description");
-
-        System.out.println("abc");
 
         Doctor doctor = doctorService.getDoctor(doctorId);
         Patient patient = patientService.getPatient(patientId);
-
-        System.out.println("xyz");
 
         Consultation createdConsultation = consultationService.createConsultation(doctor, patient, description);
         return ResponseEntity.ok(createdConsultation);
