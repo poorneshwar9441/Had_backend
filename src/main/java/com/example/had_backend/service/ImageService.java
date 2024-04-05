@@ -9,10 +9,8 @@ import java.util.Optional;
 
 @Service
 public class ImageService {
-
     @Autowired
     private ImageRepository imageRepository;
-
     public void saveImageForUser(UserInfo userInfo, byte[] imageData) {
         Image image = new Image();
         image.setData(imageData);
@@ -23,6 +21,4 @@ public class ImageService {
         Optional<Image> imageOptional = imageRepository.findById(id);
         return imageOptional.orElse(null);
     }
-
-
 }
