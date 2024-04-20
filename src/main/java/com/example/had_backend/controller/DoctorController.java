@@ -59,13 +59,19 @@ public class DoctorController {
     }
 
     @GetMapping("/doctor/getPrimaryConsultations")
-    public ResponseEntity<Set<Consultation>> getPrimaryConsultations(@RequestBody Map<String, Object> request) {
-        Long doctorId = ((Integer) request.get("doctorId")).longValue();
-
+    public ResponseEntity<Set<Consultation>> getPrimaryConsultations(@RequestParam Long doctorId) {
         Doctor doctor = doctorService.getDoctor(doctorId);
-
         return  ResponseEntity.ok(doctor.getPrimaryConsultations());
     }
+
+//    @GetMapping("/doctor/getPrimaryConsultations")
+//    public ResponseEntity<Set<Consultation>> getPrimaryConsultations(@RequestBody Map<String, Object> request) {
+//        Long doctorId = ((Integer) request.get("doctorId")).longValue();
+//
+//        Doctor doctor = doctorService.getDoctor(doctorId);
+//
+//        return  ResponseEntity.ok(doctor.getPrimaryConsultations());
+//    }
 
 //    @GetMapping("/getNewSize")
 //    public String getNewSize(@RequestBody Map<String, Object> request) {
