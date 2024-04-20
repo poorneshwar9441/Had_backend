@@ -1,9 +1,8 @@
 package com.example.had_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,12 +16,16 @@ public class Consultation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "patient", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "patientId", referencedColumnName = "id", nullable = false)
     private Patient patient;
 
+    @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
-    @JoinColumn(name = "mainDoctor", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "mainDoctorId", referencedColumnName = "id", nullable = false)
     private Doctor mainDoctor;
 
     @ManyToMany
@@ -33,16 +36,19 @@ public class Consultation {
     )
     private Set<Doctor> secondaryDoctors = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "consultation_report",
-            joinColumns = @JoinColumn(name = "consultationId"),
-            inverseJoinColumns = @JoinColumn(name = "reportId")
-    )
-    private Set<Report> reports = new HashSet<>();
+    @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Test> tests = new HashSet<>();
 
-    @OneToMany(mappedBy = "consultation")
-    private Set<Room> rooms = new HashSet<>();
+//    @ManyToMany
+//    @JoinTable(
+//            name = "consultation_report",
+//            joinColumns = @JoinColumn(name = "consultationId"),
+//            inverseJoinColumns = @JoinColumn(name = "reportId")
+//    )
+//    private Set<Report> reports = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "consultation")
+//    private Set<Room> rooms = new HashSet<>();
 
     private String description;
     private Boolean finished;

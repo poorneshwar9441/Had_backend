@@ -1,9 +1,8 @@
 package com.example.had_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,10 +17,11 @@ public class Doctor {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserInfo user_id;
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private UserInfo user;
 
-    @OneToMany(mappedBy = "mainDoctor")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "mainDoctor", cascade = CascadeType.ALL)
     private Set<Consultation> primaryConsultations = new HashSet<>();
 
     @ManyToMany(mappedBy = "secondaryDoctors")

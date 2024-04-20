@@ -1,4 +1,5 @@
 package com.example.had_backend.entity;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,15 +12,15 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfo {
+public class TestVersion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String email;
-    private String password;
-    private String roles;
 
-    @OneToMany(mappedBy = "sender")
+    @ManyToOne
+    @JoinColumn(name = "testId", referencedColumnName = "id", nullable = false)
+    private Test test;
+
+    @OneToMany(mappedBy = "version", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Note> notes = new ArrayList<>();
 }

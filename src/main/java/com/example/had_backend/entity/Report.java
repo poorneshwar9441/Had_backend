@@ -10,9 +10,9 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "patient", referencedColumnName = "id", nullable = false)
-    private Patient patient;
+//    @ManyToOne
+//    @JoinColumn(name = "patient", referencedColumnName = "id", nullable = false)
+//    private Patient patient;
 
     private String description;
 }

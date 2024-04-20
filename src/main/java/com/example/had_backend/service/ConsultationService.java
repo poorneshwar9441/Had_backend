@@ -3,7 +3,6 @@ package com.example.had_backend.service;
 import com.example.had_backend.entity.Consultation;
 import com.example.had_backend.entity.Doctor;
 import com.example.had_backend.entity.Patient;
-import com.example.had_backend.entity.Report;
 import com.example.had_backend.repository.ConsultationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,7 @@ public class ConsultationService {
         consultation.getSecondaryDoctors().add(doctor);
     }
 
-    public void addReport(Consultation consultation, Report report) {
-        consultation.getReports().add(report);
-    }
+//    public void addReport(Consultation consultation, Report report) {
+//        consultation.getReports().add(report);
+//    }
 }

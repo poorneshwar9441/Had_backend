@@ -42,5 +42,4 @@ public class UserInfoService implements UserDetailsService {
         Optional<UserInfo> userInfoOptional = repository.findByName(username);
         return userInfoOptional.orElse(null); // Handle the Optional
     }
-
 }

@@ -18,8 +18,8 @@ public class Patient {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserInfo user_id;
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private UserInfo user;
 
     @OneToMany(mappedBy = "patient")
     private Set<Consultation> consultations = new HashSet<>();
