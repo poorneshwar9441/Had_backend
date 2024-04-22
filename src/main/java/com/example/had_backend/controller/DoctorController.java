@@ -1,6 +1,6 @@
 package com.example.had_backend.controller;
 
-import com.example.had_backend.dto.PrimaryConsultationsDTO;
+import com.example.had_backend.dto.ConsultationsDTO;
 import com.example.had_backend.entity.Consultation;
 import com.example.had_backend.entity.Doctor;
 import com.example.had_backend.entity.Patient;
@@ -65,16 +65,18 @@ public class DoctorController {
 
     @PreAuthorize("hasAuthority('doctor')")
     @GetMapping("/doctor/getPrimaryConsultations")
-    public ResponseEntity<Set<PrimaryConsultationsDTO>> getPrimaryConsultations(@RequestHeader (name="Authorization") String token) {
+    public ResponseEntity<Set<ConsultationsDTO>> getPrimaryConsultations(@RequestHeader (name="Authorization") String token) {
         token = token.substring(7);
         Doctor doctor = doctorService.getDoctorByName(jwtService.extractUsername(token));
 
-        Set<PrimaryConsultationsDTO> primaryConsultations = doctor.getPrimaryConsultations().stream()
+        Set<ConsultationsDTO> primaryConsultations = doctor.getPrimaryConsultations().stream()
                 .map(consultation -> {
-                    PrimaryConsultationsDTO dto = new PrimaryConsultationsDTO();
+                    ConsultationsDTO dto = new ConsultationsDTO();
+                    dto.setId(consultation.getId());
                     dto.setName(consultation.getName());
                     dto.setDescription(consultation.getDescription());
                     dto.setPatientName(consultation.getPatient().getUser().getName());
+                    dto.setDoctorName(consultation.getMainDoctor().getUser().getName());
                     dto.setDate(consultation.getDate());
 
                     return dto;
