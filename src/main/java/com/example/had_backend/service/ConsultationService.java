@@ -50,9 +50,9 @@ public class ConsultationService {
         consultation.setFinished(false);
     }
 
-    public void addSecondaryDoctor(Consultation consultation, Doctor doctor) {
-        consultation.getSecondaryDoctors().add(doctor);
-    }
+//    public void addSecondaryDoctor(Consultation consultation, Doctor doctor) {
+//        consultation.getSecondaryDoctors().add(doctor);
+//    }
 
 //    public void addReport(Consultation consultation, Report report) {
 //        consultation.getReports().add(report);

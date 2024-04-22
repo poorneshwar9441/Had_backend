@@ -20,7 +20,7 @@ public class Doctor {
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private UserInfo user;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="primaryConsultations_mainDoctor")
     @OneToMany(mappedBy = "mainDoctor", cascade = CascadeType.ALL)
     private Set<Consultation> primaryConsultations = new HashSet<>();
 

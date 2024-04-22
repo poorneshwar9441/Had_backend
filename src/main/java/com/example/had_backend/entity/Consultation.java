@@ -1,6 +1,7 @@
 package com.example.had_backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,12 +18,14 @@ public class Consultation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference(value = "consultations_patient")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "patientId", referencedColumnName = "id", nullable = false)
     private Patient patient;
 
-    @JsonBackReference
+    @JsonBackReference(value="primaryConsultations_mainDoctor")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
@@ -37,6 +40,7 @@ public class Consultation {
     )
     private Set<Doctor> secondaryDoctors = new HashSet<>();
 
+    @JsonManagedReference(value = "tests_consultation")
     @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Test> tests = new HashSet<>();
 

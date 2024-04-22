@@ -4,10 +4,7 @@ import com.example.had_backend.entity.Consultation;
 import com.example.had_backend.entity.Doctor;
 import com.example.had_backend.entity.Patient;
 import com.example.had_backend.entity.UserInfo;
-import com.example.had_backend.service.ConsultationService;
-import com.example.had_backend.service.DoctorService;
-import com.example.had_backend.service.PatientService;
-import com.example.had_backend.service.UserInfoService;
+import com.example.had_backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +25,9 @@ public class DoctorController {
     private UserInfoService userInfoService;
 
     @Autowired
+    private JwtService jwtService;
+
+    @Autowired
     private ConsultationService consultationService;
 
     @PostMapping("/createDoctor")
@@ -39,12 +39,14 @@ public class DoctorController {
 
     @PostMapping("/createConsultation")
     public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request) {
-        Long doctorId = ((Integer) request.get("doctorId")).longValue();
+//        Long doctorId = ((Integer) request.get("doctorId")).longValue();
+        String token = (String) request.get("token");
         String patientName =  (String) request.get("patientName");
         String name = (String) request.get("name");
         String description = (String) request.get("description");
 
-        Doctor doctor = doctorService.getDoctor(doctorId);
+//        Doctor doctor = doctorService.getDoctor(doctorId);
+        Doctor doctor = doctorService.getDoctorByName(jwtService.extractUsername(token));
         Patient patient = patientService.getPatientByName(patientName);
 
         if(doctor == null || patient == null){
@@ -54,14 +56,16 @@ public class DoctorController {
         Consultation createdConsultation = consultationService.createConsultation(doctor, patient, name, description);
 
         doctorService.addPrimaryConsultation(doctor, createdConsultation);
+        patientService.addConsultation(patient, createdConsultation);
 
-//        System.out.println("size of new set: " + doctor.getPrimaryConsultations().size());
         return ResponseEntity.ok(createdConsultation);
     }
 
     @GetMapping("/doctor/getPrimaryConsultations")
-    public ResponseEntity<Set<Consultation>> getPrimaryConsultations(@RequestParam Long doctorId) {
-        Doctor doctor = doctorService.getDoctor(doctorId);
+    public ResponseEntity<Set<Consultation>> getPrimaryConsultations(@RequestParam String token) {
+//        Doctor doctor = doctorService.getDoctor(doctorId);
+
+        Doctor doctor = doctorService.getDoctorByName(jwtService.extractUsername(token));
         return  ResponseEntity.ok(doctor.getPrimaryConsultations());
     }
 

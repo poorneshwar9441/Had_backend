@@ -1,10 +1,12 @@
 package com.example.had_backend.service;
 
+import com.example.had_backend.entity.Consultation;
 import com.example.had_backend.entity.Patient;
 import com.example.had_backend.entity.UserInfo;
 import com.example.had_backend.repository.PatientRepository;
 import com.example.had_backend.repository.UserInfoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +46,10 @@ public class PatientService {
         Patient patient = new Patient();
         patient.setUser(userInfo);
         return patientRepository.save(patient);
+    }
+
+    @Transactional
+    public void addConsultation(Patient patient, Consultation consultation) {
+        patient.getConsultations().add(consultation);
     }
 }

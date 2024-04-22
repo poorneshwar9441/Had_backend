@@ -1,5 +1,6 @@
 package com.example.had_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class Patient {
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private UserInfo user;
 
+    @JsonManagedReference(value = "consultations_patient")
     @OneToMany(mappedBy = "patient")
     private Set<Consultation> consultations = new HashSet<>();
 }

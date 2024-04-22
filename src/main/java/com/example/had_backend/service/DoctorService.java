@@ -19,6 +19,11 @@ public class DoctorService {
                 .orElseThrow(() -> new EntityNotFoundException("Doctor not found with id: " + doctorId));
     }
 
+    public Doctor getDoctorByName(String doctorName) {
+        return doctorRepository.findByDoctorName(doctorName)
+                .orElseThrow(() -> new EntityNotFoundException("Doctor not found with name: " + doctorName));
+    }
+
     public Doctor createDoctor() {
         Doctor doctor = new Doctor();
         return doctorRepository.save(doctor);
