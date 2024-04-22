@@ -19,6 +19,13 @@ public class ConsultationController {
     @Autowired
     private PatientService patientService;
 
+//    @PostMapping("/consultation/createTest")
+//    public ResponseEntity<Test> createTest(@RequestBody Map<String, Object> request) {
+//        String token = (String) request.get("token");
+//        String name = (String) request.get("name");
+//        String description = (String) request.get("description");
+//    }
+
 //    @PostMapping("/createConsultation")
 //    public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request) {
 //        Long doctorId = ((Integer) request.get("doctorId")).longValue();

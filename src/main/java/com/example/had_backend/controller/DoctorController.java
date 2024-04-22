@@ -1,5 +1,6 @@
 package com.example.had_backend.controller;
 
+import com.example.had_backend.dto.PrimaryConsultationsDTO;
 import com.example.had_backend.entity.Consultation;
 import com.example.had_backend.entity.Doctor;
 import com.example.had_backend.entity.Patient;
@@ -7,10 +8,12 @@ import com.example.had_backend.entity.UserInfo;
 import com.example.had_backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -37,15 +40,14 @@ public class DoctorController {
         return ResponseEntity.ok(createdDoctor);
     }
 
+    @PreAuthorize("hasAuthority('doctor')")
     @PostMapping("/createConsultation")
-    public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request) {
-//        Long doctorId = ((Integer) request.get("doctorId")).longValue();
-        String token = (String) request.get("token");
+    public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request, @RequestHeader (name="Authorization") String token) {
+        token = token.substring(7);
         String patientName =  (String) request.get("patientName");
         String name = (String) request.get("name");
         String description = (String) request.get("description");
 
-//        Doctor doctor = doctorService.getDoctor(doctorId);
         Doctor doctor = doctorService.getDoctorByName(jwtService.extractUsername(token));
         Patient patient = patientService.getPatientByName(patientName);
 
@@ -61,12 +63,25 @@ public class DoctorController {
         return ResponseEntity.ok(createdConsultation);
     }
 
+    @PreAuthorize("hasAuthority('doctor')")
     @GetMapping("/doctor/getPrimaryConsultations")
-    public ResponseEntity<Set<Consultation>> getPrimaryConsultations(@RequestParam String token) {
-//        Doctor doctor = doctorService.getDoctor(doctorId);
-
+    public ResponseEntity<Set<PrimaryConsultationsDTO>> getPrimaryConsultations(@RequestHeader (name="Authorization") String token) {
+        token = token.substring(7);
         Doctor doctor = doctorService.getDoctorByName(jwtService.extractUsername(token));
-        return  ResponseEntity.ok(doctor.getPrimaryConsultations());
+
+        Set<PrimaryConsultationsDTO> primaryConsultations = doctor.getPrimaryConsultations().stream()
+                .map(consultation -> {
+                    PrimaryConsultationsDTO dto = new PrimaryConsultationsDTO();
+                    dto.setName(consultation.getName());
+                    dto.setDescription(consultation.getDescription());
+                    dto.setPatientName(consultation.getPatient().getUser().getName());
+                    dto.setDate(consultation.getDate());
+
+                    return dto;
+                })
+                .collect(Collectors.toSet());
+
+        return ResponseEntity.ok(primaryConsultations);
     }
 
 //    @GetMapping("/doctor/getPrimaryConsultations")
