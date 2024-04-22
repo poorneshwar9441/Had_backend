@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,6 +51,9 @@ public class Consultation {
 //    @OneToMany(mappedBy = "consultation")
 //    private Set<Room> rooms = new HashSet<>();
 
+    private String name;
     private String description;
+    private Date date;
+
     private Boolean finished;
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Service
@@ -20,11 +21,15 @@ public class ConsultationService {
                 .orElseThrow(() -> new EntityNotFoundException("Consultation not found with id: " + consultationId));
     }
 
-    public Consultation createConsultation(Doctor doctor, Patient patient, String description) {
+    public Consultation createConsultation(Doctor doctor, Patient patient, String name, String description) {
         Consultation consultation = new Consultation();
         consultation.setPatient(patient);
         consultation.setMainDoctor(doctor);
+        consultation.setName(name);
         consultation.setDescription(description);
+
+        Date currDate = new Date();
+        consultation.setDate(currDate);
 
         return consultationRepository.save(consultation);
     }

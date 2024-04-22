@@ -41,6 +41,7 @@ public class DoctorController {
     public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request) {
         Long doctorId = ((Integer) request.get("doctorId")).longValue();
         String patientName =  (String) request.get("patientName");
+        String name = (String) request.get("name");
         String description = (String) request.get("description");
 
         Doctor doctor = doctorService.getDoctor(doctorId);
@@ -50,7 +51,7 @@ public class DoctorController {
             return ResponseEntity.badRequest().body(null);
         }
 
-        Consultation createdConsultation = consultationService.createConsultation(doctor, patient, description);
+        Consultation createdConsultation = consultationService.createConsultation(doctor, patient, name, description);
 
         doctorService.addPrimaryConsultation(doctor, createdConsultation);
 
