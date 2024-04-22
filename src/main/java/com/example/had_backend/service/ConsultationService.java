@@ -3,8 +3,10 @@ package com.example.had_backend.service;
 import com.example.had_backend.entity.Consultation;
 import com.example.had_backend.entity.Doctor;
 import com.example.had_backend.entity.Patient;
+import com.example.had_backend.entity.Test;
 import com.example.had_backend.repository.ConsultationRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +50,11 @@ public class ConsultationService {
     public void startConsultation(Consultation consultation, Doctor doctor) {
         checkMainDoctor(consultation, doctor);
         consultation.setFinished(false);
+    }
+
+    @Transactional
+    public void addTest(Consultation consultation, Test test) {
+        consultation.getTests().add(test);
     }
 
 //    public void addSecondaryDoctor(Consultation consultation, Doctor doctor) {

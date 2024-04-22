@@ -42,7 +42,7 @@ public class DoctorController {
 
     @PreAuthorize("hasAuthority('doctor')")
     @PostMapping("/createConsultation")
-    public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request, @RequestHeader (name="Authorization") String token) {
+    public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request, @RequestHeader(name="Authorization") String token) {
         token = token.substring(7);
         String patientName =  (String) request.get("patientName");
         String name = (String) request.get("name");

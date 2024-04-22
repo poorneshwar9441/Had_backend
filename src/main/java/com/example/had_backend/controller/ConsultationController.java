@@ -1,11 +1,18 @@
 package com.example.had_backend.controller;
 
-import com.example.had_backend.service.ConsultationService;
-import com.example.had_backend.service.DoctorService;
-import com.example.had_backend.service.PatientService;
+import com.example.had_backend.dto.TestsDTO;
+import com.example.had_backend.entity.Consultation;
+import com.example.had_backend.entity.Doctor;
+import com.example.had_backend.entity.Test;
+import com.example.had_backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -14,17 +21,68 @@ public class ConsultationController {
     private ConsultationService consultationService;
 
     @Autowired
+    private TestService testService;
+
+    @Autowired
     private DoctorService doctorService;
 
     @Autowired
     private PatientService patientService;
 
-//    @PostMapping("/consultation/createTest")
-//    public ResponseEntity<Test> createTest(@RequestBody Map<String, Object> request) {
-//        String token = (String) request.get("token");
-//        String name = (String) request.get("name");
-//        String description = (String) request.get("description");
-//    }
+    @Autowired
+    private JwtService jwtService;
+
+    @PreAuthorize("hasAuthority('doctor')")
+    @PostMapping("/consultation/createTest")
+    public ResponseEntity<Test> createTest(@RequestBody Map<String, Object> request, @RequestHeader(name="Authorization") String token) {
+        token = token.substring(7);
+        Long consultationId = ((Integer) request.get("consultationId")).longValue();
+        String name = (String) request.get("name");
+        String description = (String) request.get("description");
+        Doctor doctor = doctorService.getDoctorByName(jwtService.extractUsername(token));
+
+        Consultation consultation = consultationService.getConsultation(consultationId);
+
+        if(!doctor.getPrimaryConsultations().contains(consultation) && !doctor.getSecondaryConsultations().contains(consultation)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        Test createdTest = testService.createTest(consultation, name, description);
+
+        consultationService.addTest(consultation, createdTest);
+
+        return ResponseEntity.ok(createdTest);
+    }
+
+    @GetMapping("/consultation/getTests")
+    public ResponseEntity<Set<TestsDTO>> getTests(@RequestParam Long consultationId, @RequestHeader (name="Authorization") String token) {
+        token =  token.substring(7);
+//        Long consultationId = ((Integer) request.get("consultationId")).longValue();
+
+        String username = jwtService.extractUsername(token);
+        Consultation consultation = consultationService.getConsultation(consultationId);
+
+        if(
+                !consultation.getSecondaryDoctors().stream().anyMatch(d -> d.getUser().getName().equals(username))
+                && !consultation.getMainDoctor().getUser().getName().equals(username)
+                && !consultation.getPatient().getUser().getName().equals(username))
+        {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        Set<TestsDTO> tests = consultation.getTests().stream()
+                .map(test -> {
+                    TestsDTO dto = new TestsDTO();
+                    dto.setId(test.getId());
+                    dto.setName(test.getName());
+                    dto.setDescription(test.getDescription());
+
+                    return dto;
+                })
+                .collect(Collectors.toSet());
+
+        return ResponseEntity.ok(tests);
+    }
 
 //    @PostMapping("/createConsultation")
 //    public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request) {
