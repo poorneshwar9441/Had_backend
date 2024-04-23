@@ -34,10 +34,14 @@ public class DoctorController {
     private ConsultationService consultationService;
 
     @PostMapping("/createDoctor")
-    public ResponseEntity<Doctor> createDoctor(@RequestBody UserInfo userInfo) {
-        UserInfo createdUserInfo = userInfoService.addUser(userInfo);
-        Doctor createdDoctor = doctorService.createDoctor(createdUserInfo);
-        return ResponseEntity.ok(createdDoctor);
+    public ResponseEntity<?> createDoctor(@RequestBody UserInfo userInfo) {
+        try {
+            UserInfo createdUserInfo = userInfoService.addUser(userInfo);
+            Doctor createdDoctor = doctorService.createDoctor(createdUserInfo);
+            return ResponseEntity.ok(createdDoctor);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Username already exists!");
+        }
     }
 
     @PreAuthorize("hasAuthority('doctor')")

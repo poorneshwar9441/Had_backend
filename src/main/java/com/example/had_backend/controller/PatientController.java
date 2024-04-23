@@ -27,10 +27,14 @@ public class PatientController {
     private JwtService jwtService;
 
     @PostMapping("/createPatient")
-    public ResponseEntity<Patient> createPatient(@RequestBody UserInfo userInfo) {
-        UserInfo createdUserInfo = userInfoService.addUser(userInfo);
-        Patient createdPatient = patientService.createPatient(createdUserInfo);
-        return ResponseEntity.ok(createdPatient);
+    public ResponseEntity<?> createPatient(@RequestBody UserInfo userInfo) {
+        try {
+            UserInfo createdUserInfo = userInfoService.addUser(userInfo);
+            Patient createdPatient = patientService.createPatient(createdUserInfo);
+            return ResponseEntity.ok(createdPatient);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Username already exists!");
+        }
     }
 
     @PreAuthorize("hasAuthority('patient')")
