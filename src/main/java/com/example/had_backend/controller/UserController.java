@@ -23,6 +23,9 @@ public class UserController {
     private JwtService jwtService;
 
     @Autowired
+    private UserInfoService userInfoService;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
 //    @GetMapping("/welcome")
@@ -71,9 +74,9 @@ public class UserController {
     }
 
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public String authenticateAndGetToken(@RequestParam String role, @RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
+        if (authentication.isAuthenticated() && userInfoService.getUserByUsername(authRequest.getUsername()).getRoles().equals(role.toLowerCase())) {
             return jwtService.generateToken(authRequest.getUsername());
         } else {
             throw new UsernameNotFoundException("invalid user request !");
