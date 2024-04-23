@@ -2,7 +2,9 @@ package com.example.had_backend.service;
 
 import com.example.had_backend.entity.UserInfo;
 import com.example.had_backend.repository.UserInfoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,12 +32,18 @@ public class UserInfoService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
     }
 
+    @Transactional
     public UserInfo addUser(UserInfo userInfo) {
 //        if(userInfo.getPassword() == null){
 //            return "failed";
 //        }
-        userInfo.setPassword(encoder.encode(userInfo.getPassword()));
-        return repository.save(userInfo);
+
+        try{
+            userInfo.setPassword(encoder.encode(userInfo.getPassword()));
+            return repository.save(userInfo);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("Username already exists!");
+        }
     }
 
     public UserInfo getUserByUsername(String username) {
