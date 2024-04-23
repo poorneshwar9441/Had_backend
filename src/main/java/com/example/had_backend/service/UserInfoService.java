@@ -37,8 +37,8 @@ public class UserInfoService implements UserDetailsService {
 //        if(userInfo.getPassword() == null){
 //            return "failed";
 //        }
-
         try{
+            userInfo.setRoles(userInfo.getRoles().toLowerCase());
             userInfo.setPassword(encoder.encode(userInfo.getPassword()));
             return repository.save(userInfo);
         } catch (DataIntegrityViolationException e) {
