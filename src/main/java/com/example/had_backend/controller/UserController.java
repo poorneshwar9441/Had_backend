@@ -1,6 +1,8 @@
 package com.example.had_backend.controller;
 
+import com.example.had_backend.dto.UserDTO;
 import com.example.had_backend.entity.AuthRequest;
+import com.example.had_backend.entity.UserInfo;
 import com.example.had_backend.service.JwtService;
 import com.example.had_backend.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -82,5 +87,34 @@ public class UserController {
             return ResponseEntity.badRequest().body("No such user found!");
 //            throw new UsernameNotFoundException("invalid user request !");
         }
+    }
+
+    @GetMapping("/getDoctorsBySubstring")
+    public  ResponseEntity<List<UserInfo>> getDoctorsBySubstring(@RequestParam String name) {
+        return ResponseEntity.ok(userInfoService.getDoctorsBySubstring(name));
+    }
+
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<List<UserDTO>> getAllUsers(@RequestParam String role) {
+        List<UserInfo> users = switch (role) {
+            case "doctor" -> userInfoService.getDoctors();
+            case "radiographer" -> userInfoService.getRadiographers();
+            case "radiologist" -> userInfoService.getRadiologists();
+            case "patient" -> userInfoService.getPatients();
+            default -> Collections.emptyList();
+        };
+
+        List<UserDTO> filteredUsers = users.stream()
+                .map(user -> {
+                    UserDTO dto = new UserDTO();
+                    dto.setId(user.getId());
+                    dto.setName(user.getName());
+                    dto.setRoles(user.getRoles());
+
+                    return dto;
+                })
+                .toList();
+
+        return ResponseEntity.ok(filteredUsers);
     }
 }
