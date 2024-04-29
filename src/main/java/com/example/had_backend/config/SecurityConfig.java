@@ -56,6 +56,7 @@ public class SecurityConfig {
                         "/consultation/createTest",
                         "/consultation/getTests",
                         "/createRadiographer",
+                        "/createRadiologist",
                         "/auth/getDoctorsBySubstring",
                         "/auth/getAllUsers").permitAll()
                 .and()
