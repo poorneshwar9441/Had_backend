@@ -54,7 +54,8 @@ public class SecurityConfig {
                         "/doctor/getPrimaryConsultations",
                         "/patient/getConsultations",
                         "/consultation/createTest",
-                        "/consultation/getTests").permitAll()
+                        "/consultation/getTests",
+                        "/createRadiographer").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/auth/user/**").authenticated()
                 .and()

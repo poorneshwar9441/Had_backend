@@ -29,6 +29,7 @@ public class PatientController {
     @PostMapping("/createPatient")
     public ResponseEntity<?> createPatient(@RequestBody UserInfo userInfo) {
         try {
+            userInfo.setRoles("patient");
             UserInfo createdUserInfo = userInfoService.addUser(userInfo);
             Patient createdPatient = patientService.createPatient(createdUserInfo);
             return ResponseEntity.ok(createdPatient);
