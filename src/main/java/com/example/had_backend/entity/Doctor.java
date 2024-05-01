@@ -30,5 +30,11 @@ public class Doctor {
     @ManyToMany(mappedBy = "secondaryDoctors")
     private Set<Consultation> secondaryConsultations = new HashSet<>();
 
+    @JsonManagedReference("visibleTests_permittedDoctors")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "permittedDoctors")
+    private Set<Test> visibleTests = new HashSet<>();
+
     private Long hospitalId;
 }

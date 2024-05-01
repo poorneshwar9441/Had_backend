@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Data
 @AllArgsConstructor
@@ -24,6 +21,6 @@ public class UserInfo {
     private String password;
     private String roles;
 
-    @OneToMany(mappedBy = "sender")
-    private List<Note> notes = new ArrayList<>();
+//    @OneToMany(mappedBy = "sender")
+//    private List<Note> notes = new ArrayList<>();
 }

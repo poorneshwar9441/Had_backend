@@ -1,9 +1,11 @@
 package com.example.had_backend.service;
 
 import com.example.had_backend.entity.Consultation;
+import com.example.had_backend.entity.Doctor;
 import com.example.had_backend.entity.Test;
 import com.example.had_backend.repository.TestRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +26,10 @@ public class TestService {
         test.setDescription(description);
 
         return testRepository.save(test);
+    }
+
+    @Transactional
+    public void addPermittedDoctors(Doctor doctor, Test test) {
+        test.getPermittedDoctors().add(doctor);
     }
 }

@@ -5,6 +5,7 @@ import com.example.had_backend.dto.UserDTO;
 import com.example.had_backend.entity.Consultation;
 import com.example.had_backend.entity.Doctor;
 import com.example.had_backend.entity.Test;
+import com.example.had_backend.entity.UserInfo;
 import com.example.had_backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,9 @@ public class ConsultationController {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private UserInfoService userInfoService;
 
     @PreAuthorize("hasAuthority('doctor')")
     @PostMapping("/consultation/addSecondaryDoctor")
@@ -101,13 +105,18 @@ public class ConsultationController {
 
         Consultation consultation = consultationService.getConsultation(consultationId);
 
-        if(!doctor.getPrimaryConsultations().contains(consultation) && !doctor.getSecondaryConsultations().contains(consultation)) {
+//        if(!doctor.getPrimaryConsultations().contains(consultation) && !doctor.getSecondaryConsultations().contains(consultation)) {
+//            return ResponseEntity.badRequest().body(null);
+//        }
+        if(!doctor.getPrimaryConsultations().contains(consultation)) {
             return ResponseEntity.badRequest().body(null);
         }
 
         Test createdTest = testService.createTest(consultation, name, description);
 
         consultationService.addTest(consultation, createdTest);
+        testService.addPermittedDoctors(doctor, createdTest);
+        doctorService.addVisibleTests(doctor, createdTest);
 
         return ResponseEntity.ok(createdTest);
     }
@@ -118,6 +127,7 @@ public class ConsultationController {
 //        Long consultationId = ((Integer) request.get("consultationId")).longValue();
 
         String username = jwtService.extractUsername(token);
+        UserInfo user = userInfoService.getUserByUsername(username);
         Consultation consultation = consultationService.getConsultation(consultationId);
 
         if(
@@ -128,7 +138,16 @@ public class ConsultationController {
             return ResponseEntity.badRequest().body(null);
         }
 
-        Set<TestsDTO> tests = consultation.getTests().stream()
+
+        Set<Test> visibleTests;
+        if(user.getRoles().contains("patient")) {
+            visibleTests = consultation.getTests();
+        } else {
+            visibleTests = doctorService.getDoctorByName(username).getVisibleTests();
+        }
+
+//        Set<TestsDTO> tests = consultation.getTests().stream()
+        Set<TestsDTO> tests = visibleTests.stream()
                 .map(test -> {
                     TestsDTO dto = new TestsDTO();
                     dto.setId(test.getId());

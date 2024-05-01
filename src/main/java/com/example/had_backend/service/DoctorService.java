@@ -2,6 +2,7 @@ package com.example.had_backend.service;
 
 import com.example.had_backend.entity.Consultation;
 import com.example.had_backend.entity.Doctor;
+import com.example.had_backend.entity.Test;
 import com.example.had_backend.entity.UserInfo;
 import com.example.had_backend.repository.DoctorRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -43,5 +44,10 @@ public class DoctorService {
     @Transactional
     public void addSecondaryConsultation(Doctor doctor, Consultation consultation) {
         doctor.getSecondaryConsultations().add(consultation);
+    }
+
+    @Transactional
+    public void addVisibleTests(Doctor doctor, Test test) {
+        doctor.getVisibleTests().add(test);
     }
 }
