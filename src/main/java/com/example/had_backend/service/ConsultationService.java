@@ -57,6 +57,11 @@ public class ConsultationService {
         consultation.getTests().add(test);
     }
 
+    @Transactional
+    public void addSecondaryDoctor(Doctor doctor, Consultation consultation) {
+        consultation.getSecondaryDoctors().add(doctor);
+    }
+
 //    public void addSecondaryDoctor(Consultation consultation, Doctor doctor) {
 //        consultation.getSecondaryDoctors().add(doctor);
 //    }

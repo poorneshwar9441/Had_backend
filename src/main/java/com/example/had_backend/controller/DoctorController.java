@@ -91,6 +91,29 @@ public class DoctorController {
         return ResponseEntity.ok(primaryConsultations);
     }
 
+    @PreAuthorize("hasAuthority('doctor')")
+    @GetMapping("/doctor/getSecondaryConsultations")
+    public ResponseEntity<Set<ConsultationsDTO>> getSecondaryConsultations(@RequestHeader (name="Authorization") String token) {
+        token = token.substring(7);
+        Doctor doctor = doctorService.getDoctorByName(jwtService.extractUsername(token));
+
+        Set<ConsultationsDTO> secondaryConsultations = doctor.getSecondaryConsultations().stream()
+                .map(consultation -> {
+                    ConsultationsDTO dto = new ConsultationsDTO();
+                    dto.setId(consultation.getId());
+                    dto.setName(consultation.getName());
+                    dto.setDescription(consultation.getDescription());
+                    dto.setPatientName(consultation.getPatient().getUser().getName());
+                    dto.setDoctorName(consultation.getMainDoctor().getUser().getName());
+                    dto.setDate(consultation.getDate());
+
+                    return dto;
+                })
+                .collect(Collectors.toSet());
+
+        return ResponseEntity.ok(secondaryConsultations);
+    }
+
 //    @GetMapping("/doctor/getPrimaryConsultations")
 //    public ResponseEntity<Set<Consultation>> getPrimaryConsultations(@RequestBody Map<String, Object> request) {
 //        Long doctorId = ((Integer) request.get("doctorId")).longValue();

@@ -24,6 +24,9 @@ public class Doctor {
     @OneToMany(mappedBy = "mainDoctor", cascade = CascadeType.ALL)
     private Set<Consultation> primaryConsultations = new HashSet<>();
 
+    @JsonManagedReference(value="secondaryConsultations_secondaryDoctors")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "secondaryDoctors")
     private Set<Consultation> secondaryConsultations = new HashSet<>();
 

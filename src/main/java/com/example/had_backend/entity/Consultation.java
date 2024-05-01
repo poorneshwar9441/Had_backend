@@ -32,6 +32,9 @@ public class Consultation {
     @JoinColumn(name = "mainDoctorId", referencedColumnName = "id", nullable = false)
     private Doctor mainDoctor;
 
+    @JsonBackReference(value="secondaryConsultations_secondaryDoctors")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany
     @JoinTable(
             name = "consultation_doctor",

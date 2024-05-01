@@ -39,4 +39,9 @@ public class DoctorService {
     public void addPrimaryConsultation(Doctor doctor, Consultation consultation) {
         doctor.getPrimaryConsultations().add(consultation);
     }
+
+    @Transactional
+    public void addSecondaryConsultation(Doctor doctor, Consultation consultation) {
+        doctor.getSecondaryConsultations().add(consultation);
+    }
 }

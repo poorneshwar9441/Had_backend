@@ -58,7 +58,10 @@ public class SecurityConfig {
                         "/createRadiographer",
                         "/createRadiologist",
                         "/auth/getDoctorsBySubstring",
-                        "/auth/getAllUsers").permitAll()
+                        "/auth/getAllUsers",
+                        "/consultation/addSecondaryDoctor",
+                        "/doctor/getSecondaryConsultations",
+                        "/consultation/getSecondaryDoctors").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/auth/user/**").authenticated()
                 .and()

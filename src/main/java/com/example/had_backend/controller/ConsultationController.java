@@ -1,6 +1,7 @@
 package com.example.had_backend.controller;
 
 import com.example.had_backend.dto.TestsDTO;
+import com.example.had_backend.dto.UserDTO;
 import com.example.had_backend.entity.Consultation;
 import com.example.had_backend.entity.Doctor;
 import com.example.had_backend.entity.Test;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,6 +33,62 @@ public class ConsultationController {
 
     @Autowired
     private JwtService jwtService;
+
+    @PreAuthorize("hasAuthority('doctor')")
+    @PostMapping("/consultation/addSecondaryDoctor")
+    public ResponseEntity<Object> addSecondaryDoctor(@RequestParam String doctor, @RequestParam Long consultationId, @RequestHeader(name="Authorization") String token) {
+        token = token.substring(7);
+
+        Consultation consultation = consultationService.getConsultation(consultationId);
+        Doctor doctor_curr = doctorService.getDoctorByName(jwtService.extractUsername(token));
+        Doctor doctor_new = doctorService.getDoctorByName(doctor);
+
+        if(doctor_curr == null || doctor_new == null || consultation == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        if(!consultation.getMainDoctor().equals(doctor_curr)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        if(doctor_curr.equals(doctor_new)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        consultationService.addSecondaryDoctor(doctor_new, consultation);
+        doctorService.addSecondaryConsultation(doctor_new, consultation);
+
+        return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/consultation/getSecondaryDoctors")
+    public ResponseEntity<List<UserDTO>> getSecondaryDoctors(@RequestParam Long consultationId, @RequestHeader (name="Authorization") String token) {
+        token =  token.substring(7);
+
+        String username = jwtService.extractUsername(token);
+        Consultation consultation = consultationService.getConsultation(consultationId);
+
+        if(
+                !consultation.getSecondaryDoctors().stream().anyMatch(d -> d.getUser().getName().equals(username))
+                        && !consultation.getMainDoctor().getUser().getName().equals(username)
+                        && !consultation.getPatient().getUser().getName().equals(username))
+        {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        List<UserDTO> secondaryDoctors = consultation.getSecondaryDoctors().stream()
+                .map(doctor -> {
+                    UserDTO dto = new UserDTO();
+                    dto.setId(doctor.getUser().getId());
+                    dto.setName(doctor.getUser().getName());
+                    dto.setRoles(doctor.getUser().getRoles());
+
+                    return dto;
+                })
+                .toList();
+
+        return ResponseEntity.ok(secondaryDoctors);
+    }
 
     @PreAuthorize("hasAuthority('doctor')")
     @PostMapping("/consultation/createTest")
