@@ -96,6 +96,8 @@ public class UserController {
 
     @GetMapping("/getAllUsers")
     public ResponseEntity<List<UserDTO>> getAllUsers(@RequestParam String role) {
+        System.out.println("asdasd");
+
         List<UserInfo> users = switch (role) {
             case "doctor" -> userInfoService.getDoctors();
             case "radiographer" -> userInfoService.getRadiographers();

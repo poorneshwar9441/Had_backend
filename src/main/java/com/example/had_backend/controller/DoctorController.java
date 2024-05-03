@@ -68,7 +68,8 @@ public class DoctorController {
         return ResponseEntity.ok(createdConsultation);
     }
 
-    @PreAuthorize("hasAuthority('doctor')")
+//    @PreAuthorize("hasAuthority('doctor')")
+    @PreAuthorize("hasAnyAuthority('doctor', 'radiologist', 'radiographer')")
     @GetMapping("/doctor/getPrimaryConsultations")
     public ResponseEntity<Set<ConsultationsDTO>> getPrimaryConsultations(@RequestHeader (name="Authorization") String token) {
         token = token.substring(7);
@@ -91,9 +92,12 @@ public class DoctorController {
         return ResponseEntity.ok(primaryConsultations);
     }
 
-    @PreAuthorize("hasAuthority('doctor')")
+//    @PreAuthorize("hasAuthority('doctor')")
+    @PreAuthorize("hasAnyAuthority('doctor', 'radiologist', 'radiographer')")
     @GetMapping("/doctor/getSecondaryConsultations")
     public ResponseEntity<Set<ConsultationsDTO>> getSecondaryConsultations(@RequestHeader (name="Authorization") String token) {
+        System.out.println("entered here");
+
         token = token.substring(7);
         Doctor doctor = doctorService.getDoctorByName(jwtService.extractUsername(token));
 
