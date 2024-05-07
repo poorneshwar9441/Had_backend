@@ -62,7 +62,9 @@ public class SecurityConfig {
                         "/consultation/addSecondaryDoctor",
                         "/doctor/getSecondaryConsultations",
                         "/consultation/getSecondaryDoctors",
-                        "/test/permitDoctor").permitAll()
+                        "/test/permitDoctor",
+                        "/test/createVersion",
+                        "/test/getVersions").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/auth/user/**").authenticated()
                 .and()

@@ -1,6 +1,7 @@
 package com.example.had_backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,7 +40,7 @@ public class Test {
     private Set<Doctor> permittedDoctors = new HashSet<>();
 
 
-//    @JsonManagedReference
-//    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Set<TestVersion> versions = new HashSet<>();
+    @JsonManagedReference(value = "versions_test")
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TestVersion> versions = new HashSet<>();
 }
