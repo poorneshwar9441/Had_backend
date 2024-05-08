@@ -1,10 +1,8 @@
 package com.example.had_backend.controller;
 
+import com.example.had_backend.dto.NotesDTO;
 import com.example.had_backend.dto.TestVersionsDTO;
-import com.example.had_backend.entity.Consultation;
-import com.example.had_backend.entity.Doctor;
-import com.example.had_backend.entity.Test;
-import com.example.had_backend.entity.TestVersion;
+import com.example.had_backend.entity.*;
 import com.example.had_backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class TestController {
@@ -41,6 +40,9 @@ public class TestController {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private NoteService noteService;
 
     // Endpoint that returns "Hello, world!"
 //    @GetMapping("/hello")
@@ -131,6 +133,59 @@ public class TestController {
 
         return ResponseEntity.ok().body(testVersions);
     }
+
+    @PostMapping("/test/addNote")
+    public ResponseEntity<Object> addNote(@RequestParam Long testId, @RequestBody Map<String, Object> request, @RequestHeader(name = "Authorization") String token) {
+        token = token.substring(7);
+        String username = jwtService.extractUsername(token);
+        Doctor doctor = doctorService.getDoctorByName(username);
+//        TestVersion testVersion = testVersionService.getTestVersion(testVersionId);
+//        Test test = testVersion.getTest();
+        Test test = testService.getTest(testId);
+
+        if(!test.getPermittedDoctors().contains(doctor)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+//        String sender = (String) request.get("sender");
+        String message = (String) request.get("message");
+
+//        Note createdNote = noteService.createNote(testVersion, username, message);
+//        testVersionService.addNote(testVersion, createdNote);
+
+        Note createdNote = noteService.createNote(test, username, message);
+        testService.addNote(test, createdNote);
+
+        return ResponseEntity.ok().body("Note added!");
+    }
+
+    @GetMapping("/test/getNotes")
+    public ResponseEntity<List<NotesDTO>> getNotes(@RequestParam Long testId, @RequestHeader(name = "Authorization") String token) {
+        token = token.substring(7);
+        String username = jwtService.extractUsername(token);
+        Doctor doctor = doctorService.getDoctorByName(username);
+//        TestVersion testVersion = testVersionService.getTestVersion(testVersionId);
+//        Test test = testVersion.getTest();
+        Test test = testService.getTest(testId);
+
+        if(!test.getPermittedDoctors().contains(doctor)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        List<NotesDTO> notes = test.getNotes().stream()
+                .map(note -> {
+                    NotesDTO dto = new NotesDTO();
+                    dto.setId(note.getId());
+                    dto.setSender(note.getSender());
+                    dto.setMessage(note.getMessage());
+
+                    return dto;
+                })
+                .toList();
+
+        return ResponseEntity.ok().body(notes);
+    }
+
 
 //    @GetMapping("/test/getFile")
 //    public ResponseEntity<byte[]> getFile(@RequestParam Long testId, @RequestParam Long testVersionId, @RequestHeader(name = "Authorization") String token) {

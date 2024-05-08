@@ -1,12 +1,8 @@
 package com.example.had_backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -40,7 +36,7 @@ public class TestVersion {
     @Column(length = Integer.MAX_VALUE)
     private byte[] data; // Byte array to store image data
 
-    @JsonManagedReference(value = "notes_version")
-    @OneToMany(mappedBy = "version", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Note> notes = new ArrayList<>();
+//    @JsonManagedReference(value = "notes_version")
+//    @OneToMany(mappedBy = "version", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Note> notes = new ArrayList<>();
 }

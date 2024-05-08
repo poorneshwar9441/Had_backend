@@ -13,12 +13,19 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonBackReference(value = "notes_version")
+//    @JsonBackReference(value = "notes_version")
+//    @ToString.Exclude
+//    @EqualsAndHashCode.Exclude
+//    @ManyToOne
+//    @JoinColumn(name = "versionId")
+//    private TestVersion version;
+
+    @JsonBackReference(value = "notes_test")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne
-    @JoinColumn(name = "versionId")
-    private TestVersion version;
+    @JoinColumn(name = "testId")
+    private Test test;
 
 //    @ManyToOne
 //    @JoinColumn(name = "userId")

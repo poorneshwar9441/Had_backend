@@ -1,9 +1,6 @@
 package com.example.had_backend.service;
 
-import com.example.had_backend.entity.Consultation;
-import com.example.had_backend.entity.Doctor;
-import com.example.had_backend.entity.Test;
-import com.example.had_backend.entity.TestVersion;
+import com.example.had_backend.entity.*;
 import com.example.had_backend.repository.TestRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -37,5 +34,10 @@ public class TestService {
     @Transactional
     public void addTestVersion(Test test, TestVersion testVersion) {
         test.getVersions().add(testVersion);
+    }
+
+    @Transactional
+    public void addNote(Test test, Note note) {
+        test.getNotes().add(note);
     }
 }
