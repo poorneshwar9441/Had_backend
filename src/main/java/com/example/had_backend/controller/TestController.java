@@ -135,12 +135,14 @@ public class TestController {
     }
 
     @PostMapping("/test/addNote")
-    public ResponseEntity<Object> addNote(@RequestParam Long testId, @RequestBody Map<String, Object> request, @RequestHeader(name = "Authorization") String token) {
+    public ResponseEntity<Object> addNote(@RequestBody Map<String, Object> request, @RequestHeader(name = "Authorization") String token) {
         token = token.substring(7);
         String username = jwtService.extractUsername(token);
         Doctor doctor = doctorService.getDoctorByName(username);
 //        TestVersion testVersion = testVersionService.getTestVersion(testVersionId);
 //        Test test = testVersion.getTest();
+
+        Long testId = ((Integer) request.get("testId")).longValue();
         Test test = testService.getTest(testId);
 
         if(!test.getPermittedDoctors().contains(doctor)) {
