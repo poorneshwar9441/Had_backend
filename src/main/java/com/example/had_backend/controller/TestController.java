@@ -25,6 +25,9 @@ public class TestController {
     private TestService testService;
 
     @Autowired
+    private TestVersionService testVersionService;
+
+    @Autowired
     private DoctorService doctorService;
 
     @Autowired
@@ -82,19 +85,25 @@ public class TestController {
             return ResponseEntity.badRequest().body(null);
         }
 
-        TestVersion createdTestVersion = new TestVersion();
-
-        createdTestVersion.setDoctor(doctor);
-
-        createdTestVersion.setTest(test);
-        testService.addTestVersion(test, createdTestVersion);
-
+        byte[] imageData;
         try {
-            byte[] imageData = file.getBytes();
-            createdTestVersion.setData(imageData);
+            imageData = file.getBytes();
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image: " + e.getMessage());
         }
+
+        TestVersion createdTestVersion = testVersionService.createTestVersion(test, doctor, imageData);
+        testService.addTestVersion(test, createdTestVersion);
+
+//        createdTestVersion.setDoctor(doctor);
+//        createdTestVersion.setTest(test);
+
+//        try {
+//            byte[] imageData = file.getBytes();
+//            createdTestVersion.setData(imageData);
+//        } catch (IOException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image: " + e.getMessage());
+//        }
 
         return ResponseEntity.ok().body(null);
     }
@@ -122,4 +131,28 @@ public class TestController {
 
         return ResponseEntity.ok().body(testVersions);
     }
+
+//    @GetMapping("/test/getFile")
+//    public ResponseEntity<byte[]> getFile(@RequestParam Long testId, @RequestParam Long testVersionId, @RequestHeader(name = "Authorization") String token) {
+//        token =  token.substring(7);
+//        String username = jwtService.extractUsername(token);
+//        Doctor doctor = doctorService.getDoctorByName(username);
+//        Test test = testService.getTest(testId);
+//        TestVersion testVersion = testVersionService.getTestVersion(testVersionId);
+//
+//        if(!test.getPermittedDoctors().contains(doctor)) {
+//            return ResponseEntity.badRequest().body(null);
+//        }
+//
+//        try {
+//            if(testVersion.getData() == null) {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//            }
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.IMAGE_JPEG)
+//                    .body(testVersion.getData());
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
 }
