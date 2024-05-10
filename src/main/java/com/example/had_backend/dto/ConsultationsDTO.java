@@ -12,4 +12,5 @@ public class ConsultationsDTO {
     private String patientName;
     private String doctorName;
     private Date date;
+    private Boolean finished;
 }

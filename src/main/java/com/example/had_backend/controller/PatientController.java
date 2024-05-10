@@ -53,6 +53,7 @@ public class PatientController {
                     dto.setPatientName(consultation.getPatient().getUser().getName());
                     dto.setDoctorName(consultation.getMainDoctor().getUser().getName());
                     dto.setDate(consultation.getDate());
+                    dto.setFinished(consultation.getFinished());
 
                     return dto;
                 })

@@ -67,7 +67,9 @@ public class SecurityConfig {
                         "/test/getVersions",
                         "/testVersion/getFile",
                         "/test/addNote",
-                        "/test/getNotes").permitAll()
+                        "/test/getNotes",
+                        "/test/getFiles",
+                        "/consultation/finishConsultation").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/auth/user/**").authenticated()
                 .and()

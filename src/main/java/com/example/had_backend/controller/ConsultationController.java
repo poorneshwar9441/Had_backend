@@ -161,6 +161,26 @@ public class ConsultationController {
         return ResponseEntity.ok(tests);
     }
 
+    @PreAuthorize("hasAuthority('doctor')")
+    @PostMapping("/consultation/finishConsultation")
+    public ResponseEntity<Object> finishConsultation(@RequestParam Long consultationId, @RequestHeader(name="Authorization") String token) {
+        token = token.substring(7);
+
+        Consultation consultation = consultationService.getConsultation(consultationId);
+        Doctor doctor_curr = doctorService.getDoctorByName(jwtService.extractUsername(token));
+
+        if(doctor_curr == null || consultation == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        if(!consultation.getMainDoctor().equals(doctor_curr)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        consultationService.finishConsultation(consultation, doctor_curr);
+        return ResponseEntity.ok().body(null);
+    }
+
 //    @PostMapping("/createConsultation")
 //    public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request) {
 //        Long doctorId = ((Integer) request.get("doctorId")).longValue();

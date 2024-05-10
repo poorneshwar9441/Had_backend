@@ -13,13 +13,23 @@ public class TestVersionService {
     @Autowired
     TestVersionRepository testVersionRepository;
 
-    public TestVersion createTestVersion(Test test, Doctor doctor, byte[] imageData) {
-        TestVersion testVersion = new TestVersion();
-        testVersion.setTest(test);
-        testVersion.setDoctor(doctor);
-        testVersion.setData(imageData);
+    public TestVersion createTestVersion(Test test, Doctor doctor, byte[] imageData, String fileName) {
+        try {
+//            System.out.println("hereee");
+            TestVersion testVersion = new TestVersion();
+            testVersion.setTest(test);
+            testVersion.setDoctor(doctor);
+            testVersion.setData(imageData);
+//            testVersion.
 
-        return testVersionRepository.save(testVersion);
+//        TestVersion createdTestVersion = testVersionRepository.save(testVersion);
+//        return createdTestVersion;
+            return testVersionRepository.save(testVersion);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create test version: " + e.getMessage(), e);
+        }
+
+
     }
 
     public TestVersion getTestVersion(Long testVersionId) {

@@ -29,6 +29,7 @@ public class ConsultationService {
         consultation.setMainDoctor(doctor);
         consultation.setName(name);
         consultation.setDescription(description);
+        consultation.setFinished(Boolean.FALSE);
 
         Date currDate = new Date();
         consultation.setDate(currDate);
@@ -42,11 +43,13 @@ public class ConsultationService {
         }
     }
 
+    @Transactional
     public void finishConsultation(Consultation consultation, Doctor doctor) {
         checkMainDoctor(consultation, doctor);
         consultation.setFinished(true);
     }
 
+    @Transactional
     public void startConsultation(Consultation consultation, Doctor doctor) {
         checkMainDoctor(consultation, doctor);
         consultation.setFinished(false);

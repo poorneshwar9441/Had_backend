@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +78,7 @@ public class TestController {
 
     @PreAuthorize("hasAnyAuthority('doctor', 'radiologist', 'radiographer')")
     @PostMapping("/test/createVersion")
-    public ResponseEntity<Object> createVersion(@RequestParam Long testId, @RequestParam("file") MultipartFile file, @RequestHeader(name = "Authorization") String token) {
+    public ResponseEntity<Object> createVersion(@RequestParam Long testId, @RequestParam String fileName, @RequestParam("file") MultipartFile file, @RequestHeader(name = "Authorization") String token) {
         token =  token.substring(7);
         String username = jwtService.extractUsername(token);
         Doctor doctor = doctorService.getDoctorByName(username);
@@ -94,7 +95,7 @@ public class TestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image: " + e.getMessage());
         }
 
-        TestVersion createdTestVersion = testVersionService.createTestVersion(test, doctor, imageData);
+        TestVersion createdTestVersion = testVersionService.createTestVersion(test, doctor, imageData, fileName);
         testService.addTestVersion(test, createdTestVersion);
 
 //        createdTestVersion.setDoctor(doctor);
@@ -125,7 +126,7 @@ public class TestController {
                 .map(testVersion -> {
                     TestVersionsDTO dto = new TestVersionsDTO();
                     dto.setId(testVersion.getId());
-                    dto.setName(testVersion.getDoctor().getUser().getName());
+//                    dto.setName(testVersion.getDoctor().getUser().getName());
 
                     return dto;
                 })
@@ -182,10 +183,43 @@ public class TestController {
                     dto.setMessage(note.getMessage());
 
                     return dto;
+
                 })
                 .toList();
 
         return ResponseEntity.ok().body(notes);
+    }
+
+    @GetMapping("/test/getFiles")
+    public ResponseEntity<List<byte[]>> getFiles(@RequestParam Long testId, @RequestHeader(name = "Authorization") String token) {
+        token =  token.substring(7);
+        String username = jwtService.extractUsername(token);
+        Doctor doctor = doctorService.getDoctorByName(username);
+        Test test = testService.getTest(testId);
+//        TestVersion testVersion = testVersionService.getTestVersion(testVersionId);
+
+        if(!test.getPermittedDoctors().contains(doctor)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        List<byte[]> allFiles = new ArrayList<>();
+        for (TestVersion testVersion : test.getVersions()) {
+            if (testVersion.getData() != null) {
+                allFiles.add(testVersion.getData());
+            }
+        }
+
+        try {
+            if(allFiles.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.IMAGE_JPEG)
+//                    .body(testVersion.getData());
+            return ResponseEntity.ok().body(allFiles);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 
