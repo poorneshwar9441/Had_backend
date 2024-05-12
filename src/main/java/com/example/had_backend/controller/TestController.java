@@ -97,7 +97,7 @@ public class TestController {
     public ResponseEntity<List<byte[]>> getFinalReports(@RequestParam Long consultationId, @RequestHeader(name = "Authorization") String token) {
         token =  token.substring(7);
         String username = jwtService.extractUsername(token);
-        Doctor doctor = doctorService.getDoctorByName(username);
+//        Doctor doctor = doctorService.getDoctorByName(username);
 //        Test test = testService.getTest(testId);
 //        TestVersion testVersion = testVersionService.getTestVersion(testVersionId);
 
