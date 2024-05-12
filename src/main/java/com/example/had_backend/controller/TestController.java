@@ -279,14 +279,14 @@ public class TestController {
     public ResponseEntity<List<byte[]>> getDicomFiles(@RequestParam Long testId, @RequestHeader(name = "Authorization") String token) {
         token =  token.substring(7);
         String username = jwtService.extractUsername(token);
-        Doctor doctor = doctorService.getDoctorByName(username);
+//        Doctor doctor = doctorService.getDoctorByName(username);
         Test test = testService.getTest(testId);
 //        TestVersion testVersion = testVersionService.getTestVersion(testVersionId);
 
-        if(!test.getPermittedDoctors().contains(doctor)) {
-            System.out.println("doctor not permitted");
-            return ResponseEntity.badRequest().body(null);
-        }
+//        if(!test.getPermittedDoctors().contains(doctor)) {
+//            System.out.println("doctor not permitted");
+//            return ResponseEntity.badRequest().body(null);
+//        }
 //        List<>
 //
         List<byte[]> allFiles = new ArrayList<>();
