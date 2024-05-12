@@ -56,6 +56,9 @@ public class TestController {
     @Autowired
     private NoteService noteService;
 
+    @Autowired
+    private ConsentRequestService consentRequestService;
+
     // Endpoint that returns "Hello, world!"
 //    @GetMapping("/hello")
 //    public String helloWorld() {
@@ -228,9 +231,18 @@ public class TestController {
             return ResponseEntity.badRequest().body(null);
         }
 
-        testService.addPermittedDoctors(permittedDoctor, test);
-        doctorService.addVisibleTests(permittedDoctor, test);
+        System.out.println("here 123");
+        Patient patient = consultation.getPatient();
+        System.out.println(patient);
 
+        ConsentRequest consentRequest = consentRequestService.createConsentRequest(patient, consultationId, testId, permittedDoctor.getId());
+        patientService.addConsentRequest(patient, consentRequest);
+
+//        System.out.println(consultation.getPatient().getConsentRequests());
+//        testService.addPermittedDoctors(permittedDoctor, test);
+//        doctorService.addVisibleTests(permittedDoctor, test);
+
+//        return ResponseEntity.ok().body(patient.getConsentRequests());
         return ResponseEntity.ok().body(null);
     }
 

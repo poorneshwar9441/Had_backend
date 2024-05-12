@@ -75,7 +75,10 @@ public class SecurityConfig {
                         "/test/addNote",
                         "/test/getNotes",
                         "/test/getFiles",
-                        "/consultation/finishConsultation").permitAll()
+                        "/consultation/finishConsultation",
+                        "patient/getConsentRequests",
+                        "patient/giveConsent",
+                        "patient/denyConsent").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/auth/user/**").authenticated()
                 .and()

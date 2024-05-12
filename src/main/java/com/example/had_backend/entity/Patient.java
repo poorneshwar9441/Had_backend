@@ -25,4 +25,8 @@ public class Patient {
     @JsonManagedReference(value = "consultations_patient")
     @OneToMany(mappedBy = "patient")
     private Set<Consultation> consultations = new HashSet<>();
+
+    @JsonManagedReference(value = "consent_patient")
+    @OneToMany(mappedBy = "patient")
+    private Set<ConsentRequest> consentRequests = new HashSet<>();
 }

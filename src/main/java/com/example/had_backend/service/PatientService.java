@@ -1,5 +1,6 @@
 package com.example.had_backend.service;
 
+import com.example.had_backend.entity.ConsentRequest;
 import com.example.had_backend.entity.Consultation;
 import com.example.had_backend.entity.Patient;
 import com.example.had_backend.entity.UserInfo;
@@ -51,5 +52,15 @@ public class PatientService {
     @Transactional
     public void addConsultation(Patient patient, Consultation consultation) {
         patient.getConsultations().add(consultation);
+    }
+
+    @Transactional
+    public void addConsentRequest(Patient patient, ConsentRequest consentRequest) {
+        patient.getConsentRequests().add(consentRequest);
+    }
+
+    @Transactional
+    public void deleteConsentRequest(Patient patient, ConsentRequest consentRequest) {
+        patient.getConsentRequests().remove(consentRequest);
     }
 }
