@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -144,6 +145,8 @@ public class ConsultationController {
             visibleTests = consultation.getTests();
         } else {
             visibleTests = doctorService.getDoctorByName(username).getVisibleTests();
+            // This safely removes the current element from the set
+            visibleTests.removeIf(test -> test.getConsultation() != null && !test.getConsultation().getId().equals(consultationId));
         }
 
 //        Set<TestsDTO> tests = consultation.getTests().stream()
