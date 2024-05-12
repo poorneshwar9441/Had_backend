@@ -40,6 +40,12 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers(
+                        "/addFinalReport",
+                        "/getFinalReports",
+                        "/test/getFiles2",
+                        "/test/createVersion2",
+                        "/dicom/getFiles",
+                        "/dicom/upload",
                         "/auth/welcome",
                         "/auth/addNewUser",
                         "/auth/generateToken",

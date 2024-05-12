@@ -6,6 +6,7 @@ import com.example.had_backend.entity.*;
 import com.example.had_backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class TestController {
+
+    @Autowired
+    private  FinalReportService finalReportService;
+
+    @Autowired
+    private  TestVersion2Service testVersion2Service;
     @Autowired
     private ConsultationService consultationService;
 
@@ -26,6 +34,9 @@ public class TestController {
 
     @Autowired
     private TestVersionService testVersionService;
+
+    @Autowired
+    private TestVersion1Service testVersion1Service;
 
     @Autowired
     private DoctorService doctorService;
@@ -50,6 +61,153 @@ public class TestController {
 //    public String helloWorld() {
 //        return "Hello, world!";
 //    }
+
+    @PostMapping("/addFinalReport")
+    public ResponseEntity<Object> uploadFinalPdfsByDoctor(@RequestParam Long consultationId, @RequestParam String fileName, @RequestParam("file") List<MultipartFile> file, @RequestHeader(name = "Authorization") String token) {
+
+        System.out.println("in the final report upload");
+        token =  token.substring(7);
+        String username = jwtService.extractUsername(token);
+        Doctor doctor = doctorService.getDoctorByName(username);
+//        Test test = testService.getTest(testId);
+
+//        if(!test.getPermittedDoctors().contains(doctor)) {
+//            System.out.println("not working in the dicom upload");
+//            return ResponseEntity.badRequest().body(null);
+//        }
+
+        for(MultipartFile f:file){
+            byte[] imageData;
+            try {
+                imageData = f.getBytes();
+                FinalReport finalReport=finalReportService.createFinalReport(consultationId, doctor, imageData, fileName);
+//                testService.addTestVersion(test, createdTestVersion);
+            }
+            catch (IOException e){
+
+            }
+
+
+        }
+
+        return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/getFinalReports")
+    public ResponseEntity<List<byte[]>> getFinalReports(@RequestParam Long consultationId, @RequestHeader(name = "Authorization") String token) {
+        token =  token.substring(7);
+        String username = jwtService.extractUsername(token);
+//        Doctor doctor = doctorService.getDoctorByName(username);
+//        Test test = testService.getTest(testId);
+//        TestVersion testVersion = testVersionService.getTestVersion(testVersionId);
+
+//        if(!test.getPermittedDoctors().contains(doctor)) {
+//            System.out.println("doctor not permitted");
+//            return ResponseEntity.badRequest().body(null);
+//        }
+//        List<>
+//
+        List<byte[]> allFiles = new ArrayList<>();
+        List<FinalReport> li=finalReportService.getAllFinalReports(consultationId);
+        if(li==null){
+            System.out.println("its null");
+        }
+        for(FinalReport t:li){
+            allFiles.add(t.getData());
+        }
+        return ResponseEntity.ok().body(allFiles);
+//        for (TestVersion testVersion : test.getVersions()) {
+//            if (testVersion.getData() != null) {
+//                allFiles.add(testVersion.getData());
+//            }
+//        }
+//
+//        try {
+//            if(allFiles.isEmpty()) {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//            }
+////            return ResponseEntity.ok()
+////                    .contentType(MediaType.IMAGE_JPEG)
+////                    .body(allFiles);
+//            return ResponseEntity.ok().body(allFiles);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+    }
+
+
+    @PostMapping("/test/createVersion2")
+    public ResponseEntity<Object> uploadPdfsByDoctor(@RequestParam Long testId, @RequestParam String fileName, @RequestParam("file") List<MultipartFile> file, @RequestHeader(name = "Authorization") String token) {
+
+        System.out.println("in the dicom upload");
+        token =  token.substring(7);
+        String username = jwtService.extractUsername(token);
+        Doctor doctor = doctorService.getDoctorByName(username);
+        Test test = testService.getTest(testId);
+
+        if(!test.getPermittedDoctors().contains(doctor)) {
+            System.out.println("not working in the dicom upload");
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        for(MultipartFile f:file){
+            byte[] imageData;
+            try {
+                imageData = f.getBytes();
+                TestVersion2 createdTestVersion=testVersion2Service.createTestVersion(test, doctor, imageData, fileName);
+//                testService.addTestVersion(test, createdTestVersion);
+            }
+            catch (IOException e){
+
+            }
+
+
+        }
+
+        return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/test/getFiles2")
+    public ResponseEntity<List<byte[]>> getPdfFiles(@RequestParam Long testId, @RequestHeader(name = "Authorization") String token) {
+        token =  token.substring(7);
+        String username = jwtService.extractUsername(token);
+        Doctor doctor = doctorService.getDoctorByName(username);
+        Test test = testService.getTest(testId);
+//        TestVersion testVersion = testVersionService.getTestVersion(testVersionId);
+
+        if(!test.getPermittedDoctors().contains(doctor)) {
+            System.out.println("doctor not permitted");
+            return ResponseEntity.badRequest().body(null);
+        }
+//        List<>
+//
+        List<byte[]> allFiles = new ArrayList<>();
+        List<TestVersion2> li=testVersion2Service.getAllVersions(testId);
+        if(li==null){
+            System.out.println("its null");
+        }
+        for(TestVersion2 t:li){
+            allFiles.add(t.getData());
+        }
+        return ResponseEntity.ok().body(allFiles);
+//        for (TestVersion testVersion : test.getVersions()) {
+//            if (testVersion.getData() != null) {
+//                allFiles.add(testVersion.getData());
+//            }
+//        }
+//
+//        try {
+//            if(allFiles.isEmpty()) {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//            }
+////            return ResponseEntity.ok()
+////                    .contentType(MediaType.IMAGE_JPEG)
+////                    .body(allFiles);
+//            return ResponseEntity.ok().body(allFiles);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+    }
 
     @PreAuthorize("hasAuthority('doctor')")
     @PostMapping("/test/permitDoctor")
@@ -76,7 +234,91 @@ public class TestController {
         return ResponseEntity.ok().body(null);
     }
 
-    @PreAuthorize("hasAnyAuthority('doctor', 'radiologist', 'radiographer')")
+    @PreAuthorize("hasAnyAuthority('radiographer')")
+    @PostMapping("/dicom/upload")
+    public ResponseEntity<Object> uploadDicom(@RequestParam Long testId, @RequestParam String fileName, @RequestParam("file") List<MultipartFile> file, @RequestHeader(name = "Authorization") String token) {
+
+        System.out.println("in the dicom upload");
+        token =  token.substring(7);
+        String username = jwtService.extractUsername(token);
+        Doctor doctor = doctorService.getDoctorByName(username);
+        Test test = testService.getTest(testId);
+
+        if(!test.getPermittedDoctors().contains(doctor)) {
+            System.out.println("not working in the dicom upload");
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        for(MultipartFile f:file){
+            byte[] imageData;
+            try {
+                imageData = f.getBytes();
+                TestVersion1 createdTestVersion=testVersion1Service.createTestVersion(test, doctor, imageData, fileName);
+//                testService.addTestVersion(test, createdTestVersion);
+            }
+            catch (IOException e){
+
+            }
+
+
+        }
+
+//        byte[] imageData;
+//        try {
+//            imageData = file.getBytes();
+//        } catch (IOException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image: " + e.getMessage());
+//        }
+//
+//        TestVersion createdTestVersion = testVersionService.createTestVersion(test, doctor, imageData, fileName);
+//        testService.addTestVersion(test, createdTestVersion);
+        return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/dicom/getFiles")
+    public ResponseEntity<List<byte[]>> getDicomFiles(@RequestParam Long testId, @RequestHeader(name = "Authorization") String token) {
+        token =  token.substring(7);
+        String username = jwtService.extractUsername(token);
+//        Doctor doctor = doctorService.getDoctorByName(username);
+        Test test = testService.getTest(testId);
+//        TestVersion testVersion = testVersionService.getTestVersion(testVersionId);
+
+//        if(!test.getPermittedDoctors().contains(doctor)) {
+//            System.out.println("doctor not permitted");
+//            return ResponseEntity.badRequest().body(null);
+//        }
+//        List<>
+//
+        List<byte[]> allFiles = new ArrayList<>();
+        List<TestVersion1> li=testVersion1Service.getAllVersions(testId);
+        if(li==null){
+            System.out.println("its null");
+        }
+        for(TestVersion1 t:li){
+            allFiles.add(t.getData());
+        }
+        return ResponseEntity.ok().body(allFiles);
+//        for (TestVersion testVersion : test.getVersions()) {
+//            if (testVersion.getData() != null) {
+//                allFiles.add(testVersion.getData());
+//            }
+//        }
+//
+//        try {
+//            if(allFiles.isEmpty()) {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//            }
+////            return ResponseEntity.ok()
+////                    .contentType(MediaType.IMAGE_JPEG)
+////                    .body(allFiles);
+//            return ResponseEntity.ok().body(allFiles);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+    }
+
+
+//    @PreAuthorize("hasAnyAuthority('doctor', 'radiologist', 'radiographer')")
     @PostMapping("/test/createVersion")
     public ResponseEntity<Object> createVersion(@RequestParam Long testId, @RequestParam String fileName, @RequestParam("file") MultipartFile file, @RequestHeader(name = "Authorization") String token) {
         token =  token.substring(7);
@@ -215,7 +457,7 @@ public class TestController {
             }
 //            return ResponseEntity.ok()
 //                    .contentType(MediaType.IMAGE_JPEG)
-//                    .body(testVersion.getData());
+//                    .body(allFiles);
             return ResponseEntity.ok().body(allFiles);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

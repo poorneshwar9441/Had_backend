@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/images")
@@ -26,6 +27,38 @@ public class ImageController {
     public String getResult(){
          return "Hello world";
     }
+
+
+    //testing
+//    @PostMapping("/dicom/upload")
+//    public ResponseEntity<String> uploadDicomImage(@RequestParam("file") List<MultipartFile> files,@RequestParam("username") String username,@RequestParam("testId") Long testId){
+//        System.out.println("in the dicom upload");
+//        try {
+//            UserInfo userInfo = userInfoService.getUserByUsername(username);
+//            if (userInfo == null) {
+//                System.out.println("not found");
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+//            }
+//            for(MultipartFile f:files){
+//                byte[] imageData=f.getBytes();
+//                imageService.saveImage(userInfo, imageData, testId);
+//            }
+//            return ResponseEntity.status(HttpStatus.OK).body("Image uploaded successfully");
+//        } catch (Exception e) {
+//            // TODO: handle exception
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image: " + e.getMessage());
+//        }
+//
+//    }
+//
+//    @GetMapping("dicom/{id}")
+//    public ResponseEntity<List<Image>> getImagesBytestId(@PathVariable Long id){
+//        List<Image> li=imageService.getImagesByTestId(id);
+//        return ResponseEntity.ok().body(li);
+//    }
+//
+//
+
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage( @RequestParam("file") MultipartFile file,@RequestParam("username") String username) {
