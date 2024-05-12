@@ -69,7 +69,8 @@ public class SecurityConfig {
                         "/test/addNote",
                         "/test/getNotes",
                         "/test/getFiles",
-                        "/consultation/finishConsultation").permitAll()
+                        "/consultation/finishConsultation",
+                        "/createAdmin").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/auth/user/**").authenticated()
                 .and()
