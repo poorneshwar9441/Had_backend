@@ -476,6 +476,16 @@ public class TestController {
         }
     }
 
+    @PostMapping("/test/deleteTest")
+    public ResponseEntity<Object> deleteTest(@RequestParam Long testId, @RequestHeader(name="Authorization") String token) {
+        token = token.substring(7);
+
+        testService.deleteTestById(testId);
+
+        return ResponseEntity.ok().body(null);
+    }
+
+
 
 //    @GetMapping("/test/getFile")
 //    public ResponseEntity<byte[]> getFile(@RequestParam Long testId, @RequestParam Long testVersionId, @RequestHeader(name = "Authorization") String token) {

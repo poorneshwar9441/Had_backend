@@ -184,6 +184,15 @@ public class ConsultationController {
         return ResponseEntity.ok().body(null);
     }
 
+    @PostMapping("/consultation/deleteConsultation")
+    public ResponseEntity<Object> deleteConsultation(@RequestParam Long consultationId, @RequestHeader(name="Authorization") String token) {
+        token = token.substring(7);
+
+        consultationService.deleteConsultationById(consultationId);
+
+        return ResponseEntity.ok().body(null);
+    }
+
 //    @PostMapping("/createConsultation")
 //    public ResponseEntity<Consultation> createConsultation(@RequestBody Map<String, Object> request) {
 //        Long doctorId = ((Integer) request.get("doctorId")).longValue();

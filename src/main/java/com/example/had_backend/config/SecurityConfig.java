@@ -78,7 +78,9 @@ public class SecurityConfig {
                         "/consultation/finishConsultation",
                         "patient/getConsentRequests",
                         "patient/giveConsent",
-                        "patient/denyConsent").permitAll()
+                        "patient/denyConsent",
+                        "/consultation/deleteConsultation",
+                        "/test/deleteTest").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("/auth/user/**").authenticated()
                 .and()

@@ -40,4 +40,9 @@ public class TestService {
     public void addNote(Test test, Note note) {
         test.getNotes().add(note);
     }
+
+    @Transactional
+    public void deleteTestById(Long testId) {
+        testRepository.deleteById(testId);
+    }
 }

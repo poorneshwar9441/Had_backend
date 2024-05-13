@@ -65,6 +65,11 @@ public class ConsultationService {
         consultation.getSecondaryDoctors().add(doctor);
     }
 
+    @Transactional
+    public void deleteConsultationById(Long consultationId) {
+        consultationRepository.deleteById(consultationId);
+    }
+
 //    public void addSecondaryDoctor(Consultation consultation, Doctor doctor) {
 //        consultation.getSecondaryDoctors().add(doctor);
 //    }

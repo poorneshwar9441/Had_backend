@@ -4,6 +4,7 @@ import com.example.had_backend.entity.ConsentRequest;
 import com.example.had_backend.entity.Patient;
 import com.example.had_backend.repository.ConsentRequestRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ public class ConsentRequestService {
                 .orElseThrow(() -> new EntityNotFoundException("ConsentRequest not found with id: " + consentRequestId));
     }
 
+    @Transactional
     public void deleteConsentRequestById(Long consentRequestId) {
         consentRequestRepository.deleteById(consentRequestId);
     }
